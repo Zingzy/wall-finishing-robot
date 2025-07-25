@@ -50,5 +50,7 @@ jobs:
         uv run mypy src --ignore-missing-imports
         
     - name: Run tests with pytest
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
         uv run pytest -vv
