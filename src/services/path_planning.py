@@ -80,7 +80,6 @@ def generate_path(grid: np.ndarray) -> List[List[int]]:
                 if not grid[row, col]:
                     path.append([row, col])
 
-    logger.info(f"Generated path with {len(path)} points covering {rows}x{cols} grid")
     return path
 
 
@@ -99,7 +98,6 @@ def generate_trajectory(
     Returns:
         Tuple[List[List[int]], Dict[str, Any]]: Path coordinates and metadata
     """
-    logger.info("Starting trajectory generation")
 
     # Validate inputs
     if wall_width <= 0 or wall_height <= 0:
@@ -146,5 +144,4 @@ def generate_trajectory(
         "cell_size": cell_size,
     }
 
-    logger.info(f"Trajectory generated: {len(path)} points, {coverage_percentage:.1f}% coverage")
     return path, metadata

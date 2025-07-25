@@ -1,5 +1,5 @@
 environment = "development"
-debug = false
+debug = true
 
 [database]
 url = "sqlite:///./trajectories.db"

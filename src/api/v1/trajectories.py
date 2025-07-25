@@ -3,6 +3,7 @@
 import time
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlmodel import Session
+import time
 from loguru import logger
 
 from src.models.trajectory import (
@@ -41,12 +42,12 @@ async def create_trajectory(
     request: TrajectoryCreateRequest, session: Session = Depends(get_session)
 ) -> TrajectoryCreateResponse:
     """Create a new trajectory with wall dimensions and obstacles."""
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     try:
         logger.info(
-            f"Creating trajectory for {request.wall_width}x{request.wall_height}m wall "
-            f"with {len(request.obstacles)} obstacles"
+            f"[Trajectory Creation] Wall: {request.wall_width}x{request.wall_height}m, "
+            f"Obstacles: {len(request.obstacles)} | Data: {request.obstacles}"
         )
 
         # Convert Pydantic obstacles to dict format
@@ -83,8 +84,10 @@ async def create_trajectory(
             metadata=metadata,
         )
 
-        execution_time = time.time() - start_time
-        logger.info(f"Created trajectory ID {trajectory.id} in {execution_time:.3f} seconds")
+        execution_time = time.perf_counter() - start_time
+        logger.info(
+            f"[Trajectory Created] ID: {trajectory.id} | Time taken: {execution_time:.4f} seconds"
+        )
 
         return response
 

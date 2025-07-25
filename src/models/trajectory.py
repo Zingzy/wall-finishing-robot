@@ -149,7 +149,6 @@ class TrajectoryRepository:
         session.commit()
         session.refresh(trajectory)
 
-        logger.info(f"Created trajectory {trajectory.id} with {len(trajectory.get_path())} points")
         return trajectory
 
     @staticmethod
