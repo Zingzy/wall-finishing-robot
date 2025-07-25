@@ -10,7 +10,7 @@ from .schemas import Settings
 class ConfigLoader:
     """Configuration loader that handles TOML files and environment variables."""
 
-    def __init__(self, config_dir: str = "src/config"):
+    def __init__(self, config_dir: str = ""):
         self.config_dir = Path(config_dir)
         self.config_file = self.config_dir / "config.toml"
         self.template_file = self.config_dir / "config.template.toml"
@@ -59,7 +59,6 @@ class ConfigLoader:
         return settings
 
 
-# Global config loader instance
 config_loader = ConfigLoader()
 
 

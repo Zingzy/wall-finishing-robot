@@ -57,7 +57,7 @@ def mark_obstacles(
 
 def generate_path(grid: np.ndarray) -> List[List[int]]:
     """
-    Generate a zigzag (Boustrophedon-like) path covering all free cells.
+    Generate a zigzag path covering all free cells.
 
     Args:
         grid: Boolean grid where True represents obstacles, False represents free space
@@ -128,7 +128,7 @@ def generate_trajectory(
     mark_obstacles(grid, obstacles, cell_size)
     path = generate_path(grid)
 
-    # Calculate statistics
+    # Calculate metadata
     total_cells = grid.size
     obstacle_cells = np.sum(grid)
     free_cells = total_cells - obstacle_cells

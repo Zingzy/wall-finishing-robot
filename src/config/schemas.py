@@ -19,7 +19,12 @@ class LoggingConfig(BaseModel):
     rotation: str = Field(default="10 MB", description="Log rotation size")
     retention: str = Field(default="1 week", description="Log retention period")
     format: str = Field(
-        default="{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}",
+        default=(
+            "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+            "<level>{level: <8}</level> | "
+            "<cyan>{module}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | "
+            "<level>{message}</level>"
+        ),
         description="Log format string",
     )
 

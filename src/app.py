@@ -1,6 +1,5 @@
 """Main FastAPI application for wall finishing robot control system."""
 
-import time
 import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator, Any
@@ -42,6 +41,7 @@ def configure_logging(settings: Settings) -> None:
             lambda msg: print(msg, end=""),
             level=settings.logging.level,
             format=settings.logging.format,
+            colorize=True,
         )
 
 
@@ -116,7 +116,7 @@ def create_app() -> FastAPI:
     @app.get("/health", summary="Health check")
     async def health_check() -> dict[str, Any]:
         """Health check endpoint."""
-        return {"status": "healthy", "timestamp": time.time()}
+        return {"status": "ok"}
 
     # Include API routers
     app.include_router(v1_router)
