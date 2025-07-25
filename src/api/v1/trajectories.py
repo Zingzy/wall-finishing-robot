@@ -113,7 +113,7 @@ async def get_trajectory(
     trajectory_id: int, session: Session = Depends(get_session)
 ) -> TrajectoryResponse:
     """Get trajectory by ID."""
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     try:
         logger.debug(f"Retrieving trajectory {trajectory_id}")
@@ -138,7 +138,7 @@ async def get_trajectory(
             path=path,
         )
 
-        execution_time = time.time() - start_time
+        execution_time = time.perf_counter() - start_time
         logger.debug(f"Retrieved trajectory {trajectory_id} in {execution_time:.3f} seconds")
 
         return response
@@ -164,7 +164,7 @@ async def list_trajectories(
     skip: int = 0, limit: int = 100, session: Session = Depends(get_session)
 ) -> TrajectoryListResponse:
     """List all trajectories with pagination."""
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     try:
         logger.debug(f"Listing trajectories with skip={skip}, limit={limit}")
@@ -193,7 +193,7 @@ async def list_trajectories(
             trajectories=trajectory_items, total=len(trajectory_items)
         )
 
-        execution_time = time.time() - start_time
+        execution_time = time.perf_counter() - start_time
         logger.debug(f"Listed {len(trajectory_items)} trajectories in {execution_time:.3f} seconds")
 
         return response
@@ -218,7 +218,7 @@ async def delete_trajectory(
     trajectory_id: int, session: Session = Depends(get_session)
 ) -> DeleteResponse:
     """Delete trajectory by ID."""
-    start_time = time.time()
+    start_time = time.perf_counter()
 
     try:
         logger.info(f"Deleting trajectory {trajectory_id}")
@@ -232,7 +232,7 @@ async def delete_trajectory(
             message="Trajectory deleted successfully", deleted_id=trajectory_id
         )
 
-        execution_time = time.time() - start_time
+        execution_time = time.perf_counter() - start_time
         logger.info(f"Deleted trajectory {trajectory_id} in {execution_time:.3f} seconds")
 
         return response
