@@ -15,6 +15,8 @@ class TrajectoryBase(SQLModel):
     wall_height: float = Field(..., description="Height of the wall in meters")
     obstacles: str = Field(..., description="JSON string of obstacles list")
     path: str = Field(..., description="JSON string of trajectory path")
+    obstacles_count: int = Field(..., description="Number of obstacles")
+    path_points: int = Field(..., description="Number of points in trajectory path")
 
 
 class Trajectory(TrajectoryBase, table=True):
@@ -27,6 +29,8 @@ class Trajectory(TrajectoryBase, table=True):
     wall_height: float = Field(..., description="Height of the wall in meters")
     obstacles: str = Field(..., description="JSON string of obstacles list")
     path: str = Field(..., description="JSON string of trajectory path")
+    obstacles_count: int = Field(..., description="Number of obstacles")
+    path_points: int = Field(..., description="Number of points in trajectory path")
 
     def __repr__(self) -> str:
         return f"<Trajectory(id={self.id}, wall={self.wall_width}x{self.wall_height})>"
@@ -45,6 +49,8 @@ class Trajectory(TrajectoryBase, table=True):
             wall_height=wall_height,
             obstacles=json.dumps(obstacles),
             path=json.dumps(path),
+            obstacles_count=len(obstacles),
+            path_points=len(path),
         )
 
     def get_obstacles(self) -> List[Dict[str, float]]:
@@ -64,43 +70,6 @@ class Trajectory(TrajectoryBase, table=True):
         except json.JSONDecodeError:
             logger.error(f"Failed to parse path JSON for trajectory {self.id}")
             return []
-
-
-class TrajectoryCreate(TrajectoryBase):
-    """Model for creating new trajectories."""
-
-    pass
-
-
-class TrajectoryRead(TrajectoryBase):
-    """Model for reading trajectories with ID."""
-
-    id: int
-
-    def get_obstacles(self) -> List[Dict[str, float]]:
-        """Parse obstacles from JSON string."""
-        try:
-            obstacles: List[Dict[str, float]] = json.loads(self.obstacles)
-            return obstacles
-        except json.JSONDecodeError:
-            return []
-
-    def get_path(self) -> List[List[int]]:
-        """Parse path from JSON string."""
-        try:
-            path: List[List[int]] = json.loads(self.path)
-            return path
-        except json.JSONDecodeError:
-            return []
-
-
-class TrajectoryUpdate(SQLModel):
-    """Model for updating trajectories."""
-
-    wall_width: Optional[float] = None
-    wall_height: Optional[float] = None
-    obstacles: Optional[str] = None
-    path: Optional[str] = None
 
 
 def get_engine() -> Engine:
@@ -162,12 +131,33 @@ class TrajectoryRepository:
         return trajectory
 
     @staticmethod
-    def get_all_trajectories(session: Session, skip: int = 0, limit: int = 100) -> List[Trajectory]:
+    def get_all_trajectories(
+        session: Session, skip: int = 0, limit: int = 100
+    ) -> List[Dict[str, Any]]:
         """Get all trajectories with pagination."""
-        statement = select(Trajectory).offset(skip).limit(limit)
+        statement = (
+            select(
+                Trajectory.id,
+                Trajectory.wall_width,
+                Trajectory.wall_height,
+                Trajectory.obstacles_count,
+                Trajectory.path_points,
+            )
+            .offset(skip)
+            .limit(limit)
+        )
         trajectories = session.exec(statement).all()
         logger.debug(f"Retrieved {len(trajectories)} trajectories")
-        return list(trajectories)
+        return [
+            {
+                "id": traj[0],
+                "wall_width": traj[1],
+                "wall_height": traj[2],
+                "obstacles_count": traj[3],
+                "path_points": traj[4],
+            }
+            for traj in trajectories
+        ]
 
     @staticmethod
     def delete_trajectory(session: Session, trajectory_id: int) -> bool:

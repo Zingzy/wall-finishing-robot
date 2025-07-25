@@ -60,7 +60,7 @@ class TrajectoryCreateRequest(BaseModel):
     )
 
 
-class TrajectoryResponse(BaseModel):
+class TrajectoryGetResponse(BaseModel):
     """Schema for trajectory response."""
 
     id: int = Field(..., description="Unique trajectory identifier")
@@ -101,6 +101,9 @@ class TrajectoryCreateResponse(BaseModel):
     obstacles: List[ObstacleSchema] = Field(..., description="List of obstacles")
     path: List[List[int]] = Field(..., description="Trajectory path as [row, col] coordinates")
     metadata: Dict[str, Any] = Field(..., description="Trajectory generation metadata")
+    execution_time: float = Field(
+        ..., description="Time taken to generate the trajectory in seconds"
+    )
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -119,6 +122,7 @@ class TrajectoryCreateResponse(BaseModel):
                     "grid_dimensions": {"rows": 50, "cols": 50},
                     "cell_size": 0.1,
                 },
+                "execution_time": 0.123,
             }
         }
     )

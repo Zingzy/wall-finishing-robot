@@ -12,12 +12,12 @@ from src.models.trajectory import (
 from src.schemas.trajectory import (
     TrajectoryCreateRequest,
     TrajectoryCreateResponse,
-    TrajectoryResponse,
+    TrajectoryGetResponse,
     TrajectoryListResponse,
-    TrajectoryListItem,
     DeleteResponse,
     ErrorResponse,
     ObstacleSchema,
+    TrajectoryListItem,
 )
 from src.services.path_planning import generate_trajectory
 
@@ -73,7 +73,8 @@ async def create_trajectory(
         # Ensure trajectory was created with an ID
         assert trajectory.id is not None, "Trajectory ID should not be None after creation"
 
-        # Prepare response
+        execution_time = time.perf_counter() - start_time
+
         response = TrajectoryCreateResponse(
             id=trajectory.id,
             wall_width=trajectory.wall_width,
@@ -81,9 +82,9 @@ async def create_trajectory(
             obstacles=[ObstacleSchema(**obs) for obs in obstacles_dict],
             path=path,
             metadata=metadata,
+            execution_time=execution_time,
         )
 
-        execution_time = time.perf_counter() - start_time
         logger.info(
             f"[Trajectory Created] ID: {trajectory.id} | Time taken: {execution_time:.4f} seconds"
         )
@@ -100,7 +101,7 @@ async def create_trajectory(
 
 @router.get(
     "/{trajectory_id}",
-    response_model=TrajectoryResponse,
+    response_model=TrajectoryGetResponse,
     summary="Get trajectory by ID",
     description="Retrieve a stored trajectory by its unique identifier",
     responses={
@@ -111,7 +112,7 @@ async def create_trajectory(
 )
 async def get_trajectory(
     trajectory_id: int, session: Session = Depends(get_session)
-) -> TrajectoryResponse:
+) -> TrajectoryGetResponse:
     """Get trajectory by ID."""
     start_time = time.perf_counter()
 
@@ -130,7 +131,7 @@ async def get_trajectory(
         obstacles = trajectory.get_obstacles()
         path = trajectory.get_path()
 
-        response = TrajectoryResponse(
+        response = TrajectoryGetResponse(
             id=trajectory.id,
             wall_width=trajectory.wall_width,
             wall_height=trajectory.wall_height,
@@ -170,24 +171,16 @@ async def list_trajectories(
         logger.debug(f"Listing trajectories with skip={skip}, limit={limit}")
 
         trajectories = TrajectoryRepository.get_all_trajectories(session, skip, limit)
-
-        trajectory_items = []
-        for traj in trajectories:
-            # Ensure trajectory has an ID (should always be true from database)
-            assert traj.id is not None, "Trajectory from database should have an ID"
-
-            obstacles = traj.get_obstacles()
-            path = traj.get_path()
-
-            trajectory_items.append(
-                TrajectoryListItem(
-                    id=traj.id,
-                    wall_width=traj.wall_width,
-                    wall_height=traj.wall_height,
-                    obstacle_count=len(obstacles),
-                    path_points=len(path),
-                )
+        trajectory_items = [
+            TrajectoryListItem(
+                id=trajectory["id"],
+                wall_width=trajectory["wall_width"],
+                wall_height=trajectory["wall_height"],
+                obstacle_count=trajectory["obstacles_count"],
+                path_points=trajectory["path_points"],
             )
+            for trajectory in trajectories
+        ]
 
         response = TrajectoryListResponse(
             trajectories=trajectory_items, total=len(trajectory_items)
