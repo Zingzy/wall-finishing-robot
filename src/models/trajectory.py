@@ -130,7 +130,7 @@ class TrajectoryRepository:
     ) -> List[Dict[str, Any]]:
         """Get all trajectories with pagination."""
         statement = (
-            select(     # type: ignore[call-overload]
+            select(  # type: ignore[call-overload]
                 Trajectory.id,
                 Trajectory.wall_width,
                 Trajectory.wall_height,
