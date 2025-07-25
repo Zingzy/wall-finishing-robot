@@ -19,28 +19,59 @@ A production-ready FastAPI-based API system for autonomous wall-finishing robot 
 ```
 wall-finishing-robot/
 ├── src/
-│   ├── __init__.py
-│   ├── main.py                 # FastAPI app and API routes
-│   ├── models/
-│   │   ├── __init__.py
-│   │   └── trajectory.py       # SQLModel for database schema
-│   ├── schemas/
-│   │   ├── __init__.py
-│   │   └── trajectory.py       # Pydantic models for validation
-│   ├── services/
-│   │   ├── __init__.py
-│   │   └── path_planning.py    # Trajectory generation logic
-│   └── static/
-│       └── index.html          # Frontend visualization
+│ ├── init.py
+│ ├── app.py # Main FastAPI application
+│ ├── api/
+│ │ ├── init.py
+│ │ └── v1/
+│ │ ├── init.py
+│ │ ├── router.py # API router configuration
+│ │ └── trajectories.py # Trajectory endpoints
+│ ├── config/
+│ │ ├── init.py
+│ │ ├── config.toml # Application configuration
+│ │ ├── config.template.toml# Configuration template
+│ │ ├── loader.py # Configuration loader
+│ │ └── schemas.py # Configuration schemas
+│ ├── models/
+│ │ ├── init.py
+│ │ └── trajectory.py # SQLModel database models
+│ ├── schemas/
+│ │ ├── init.py
+│ │ └── trajectory.py # Pydantic request/response models
+│ ├── services/
+│ │ ├── init.py
+│ │ └── path_planning.py # Trajectory generation logic
+│ └── static/
+│ ├── index.html # Frontend HTML
+│ ├── script.js # Frontend JavaScript
+│ └── styles.css # Frontend CSS (responsive)
 ├── tests/
-│   ├── __init__.py
-│   └── test_api.py             # Comprehensive API tests
+│ ├── init.py
+│ └── test_api.py # Comprehensive API tests
+├── logs/ # Application logs
 ├── .github/workflows/
-│   └── ci.yml                  # CI pipeline
-├── .gitignore                  # Git ignore patterns
-├── pyproject.toml              # Project dependencies and config
-└── README.md                   # This file
+│ └── ci.yml # CI pipeline
+├── main.py # Application entry point
+├── pyproject.toml # Project dependencies and config
+├── uv.lock # Dependency lock file
 ```
+
+## 🗄️ Database Schema
+
+### Trajectories Table
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| `id` | INTEGER | PRIMARY KEY, AUTO INCREMENT | Unique trajectory identifier |
+| `wall_width` | FLOAT | NOT NULL | Wall width in meters |
+| `wall_height` | FLOAT | NOT NULL | Wall height in meters |
+| `obstacles` | TEXT | NOT NULL | JSON string of obstacle definitions |
+| `path` | TEXT | NOT NULL | JSON string of trajectory path points |
+| `obstacles_count` | INTEGER | DEFAULT 0 | Number of obstacles (computed) |
+| `path_points` | INTEGER | DEFAULT 0 | Number of path points (computed) |
+
+
 
 ## 🚀 Quick Start
 
@@ -53,7 +84,7 @@ wall-finishing-robot/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/example/wall-finishing-robot.git
+   git clone https://github.com/zingzy/wall-finishing-robot.git
    cd wall-finishing-robot
    ```
 
@@ -196,152 +227,34 @@ The web interface provides an interactive visualization of trajectories:
 
 ### Run All Tests
 ```bash
-uv run pytest tests/ -v
-```
-
-### Run with Coverage
-```bash
-uv run pytest tests/ --cov=src --cov-report=html
-```
-
-### Test Categories
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: API endpoint testing
-- **Performance Tests**: Response time validation (< 1s)
-- **Edge Cases**: Boundary condition testing
-
-### Example Test Results
-```
-tests/test_api.py::TestTrajectoryCreation::test_create_valid_trajectory PASSED
-tests/test_api.py::TestTrajectoryCreation::test_expected_trajectory_count PASSED
-tests/test_api.py::TestPerformanceRequirements::test_large_wall_performance PASSED
-========================= 47 passed in 2.34s =========================
+uv run pytest -vv
 ```
 
 ## 🔧 Code Quality
 
 ### Linting
 ```bash
-uv run ruff check src/ tests/
-uv run ruff format src/ tests/
+uv run ruff check
+uv run ruff format --check
 ```
 
 ### Type Checking
 ```bash
-uv run mypy src/
+uv run mypy src --ignore-missing-imports
 ```
 
 ### Configuration
 - **Ruff**: Code formatting and linting
 - **MyPy**: Static type checking
 - **Pytest**: Testing framework
-- **Coverage**: Test coverage reporting
 
 ## 🚀 Deployment
 
 ### Local Development
 ```bash
-uv run python -m src.main
+uv run main.py
 ```
-
-### Production with Gunicorn
-```bash
-uv add gunicorn
-uv run gunicorn src.main:app -w 4 -k uvicorn.workers.UvicornWorker
-```
-
-### Docker (Optional)
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY . .
-RUN pip install uv && uv sync
-EXPOSE 8000
-CMD ["uv", "run", "python", "-m", "src.main"]
-```
-
-## 📊 Performance Benchmarks
-
-### Expected Performance
-- **5m×5m wall with 3 obstacles**: ~2473 trajectory points
-- **Response time**: < 1 second for all operations
-- **Memory usage**: < 100MB for typical operations
-- **Database**: Optimized with indexed primary keys
-
-### Validated Test Cases
-- ✅ 5×5m wall, 3×25cm obstacles → 2473 points
-- ✅ 10×10m wall response time < 1s  
-- ✅ 20 small obstacles processing < 1s
-- ✅ CRUD operations < 1s each
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### Port Already in Use
-```bash
-# Kill process on port 8000
-lsof -ti:8000 | xargs kill -9
-```
-
-#### Database Issues
-```bash
-# Delete database and restart
-rm trajectories.db
-uv run python -m src.main
-```
-
-#### Import Errors
-```bash
-# Reinstall dependencies
-uv sync --group dev
-```
-
-### Debug Mode
-Set environment variable for detailed logging:
-```bash
-PYTHONPATH=. LOG_LEVEL=DEBUG uv run python -m src.main
-```
-
-## 🤝 Contributing
-
-### Development Setup
-1. Fork the repository
-2. Create a feature branch
-3. Install development dependencies: `uv sync --group dev`
-4. Make changes with tests
-5. Run quality checks:
-   ```bash
-   uv run ruff check src/ tests/
-   uv run mypy src/
-   uv run pytest tests/
-   ```
-6. Submit a pull request
-
-### Code Standards
-- **Type Hints**: Required for all functions
-- **Docstrings**: Google-style docstrings
-- **Testing**: Minimum 90% coverage
-- **Formatting**: Ruff with 100-character line limit
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- **FastAPI**: Modern, fast web framework
-- **SQLModel**: SQL databases with Python type safety  
-- **NumPy**: Efficient numerical computations
-- **Loguru**: Simplified logging
-- **Ruff**: Lightning-fast Python linter
-
-## 📞 Support
-
-- **Documentation**: This README and `/docs` endpoint
-- **Issues**: GitHub Issues for bug reports
-- **Discussions**: GitHub Discussions for questions
-
----
-
-**Built with ❤️ for autonomous robotics applications**
