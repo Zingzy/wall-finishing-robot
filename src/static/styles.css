@@ -1,0 +1,235 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.content {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.left-panel {
+    flex: 1;
+    min-width: 300px;
+}
+
+.right-panel {
+    flex: 1;
+    min-width: 300px;
+}
+
+.panel {
+    background: #f9f9f9;
+    border-radius: 6px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.panel h3 {
+    margin-top: 0;
+    color: #555;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.controls button {
+    flex: 1;
+}
+
+.play-btn {
+    background: #2196F3;
+}
+
+.play-btn:hover {
+    background: #1976D2;
+}
+
+.stop-btn {
+    background: #f44336;
+}
+
+.stop-btn:hover {
+    background: #d32f2f;
+}
+
+.reset-btn {
+    background: #ff9800;
+}
+
+.reset-btn:hover {
+    background: #f57c00;
+}
+
+#canvas {
+    border: 2px solid #333;
+    background: white;
+    display: block;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.canvas-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.status {
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.status.playing {
+    color: #2196F3;
+}
+
+.status.stopped {
+    color: #f44336;
+}
+
+.status.completed {
+    color: #4CAF50;
+}
+
+.trajectory-info {
+    background: #e8f5e8;
+    border-left: 4px solid #4CAF50;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.obstacle-inputs {
+    background: #fff3e0;
+    border-left: 4px solid #ff9800;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.obstacle-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+    margin-bottom: 10px;
+}
+
+.remove-obstacle {
+    background: #f44336;
+    width: auto;
+    padding: 8px 12px;
+}
+
+.add-obstacle {
+    background: #ff9800;
+    margin-top: 10px;
+}
+
+.error {
+    color: #f44336;
+    background: #ffebee;
+    border: 1px solid #ffcdd2;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.success {
+    color: #4CAF50;
+    background: #e8f5e8;
+    border: 1px solid #c8e6c9;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.trajectory-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.trajectory-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.trajectory-item:hover {
+    background: #f0f0f0;
+}
+
+.trajectory-item.selected {
+    background: #e3f2fd;
+    border-left: 4px solid #2196F3;
+} 
