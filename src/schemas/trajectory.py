@@ -25,9 +25,6 @@ class TrajectoryCreateRequest(BaseModel):
     obstacles: List[ObstacleSchema] = Field(
         default_factory=list, description="List of rectangular obstacles"
     )
-    cell_size: float = Field(
-        default=0.1, gt=0, le=1.0, description="Grid cell size in meters (must be > 0 and <= 1.0)"
-    )
 
     @model_validator(mode="after")
     def validate_obstacles_within_wall(self) -> "TrajectoryCreateRequest":
@@ -58,7 +55,6 @@ class TrajectoryCreateRequest(BaseModel):
                     {"x": 3.0, "y": 2.0, "width": 0.25, "height": 0.25},
                     {"x": 2.0, "y": 3.5, "width": 0.25, "height": 0.25},
                 ],
-                "cell_size": 0.1,
             }
         }
     )

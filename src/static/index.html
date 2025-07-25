@@ -261,11 +261,6 @@
                         <input type="number" id="wallHeight" value="5.0" step="0.1" min="0.1" max="20">
                     </div>
                     
-                    <div class="form-group">
-                        <label for="cellSize">Cell Size (meters):</label>
-                        <input type="number" id="cellSize" value="0.1" step="0.01" min="0.01" max="1.0">
-                    </div>
-                    
                     <div class="obstacle-inputs">
                         <h4>Obstacles (windows/doors)</h4>
                         <div id="obstacleList">
@@ -321,7 +316,7 @@
                     </div>
                     
                     <div class="canvas-container">
-                        <canvas id="canvas" width="500" height="500"></canvas>
+                        <canvas id="canvas" width="500" height="500"></canvas> <!-- Will be resized dynamically -->
                     </div>
                     
                     <div id="trajectoryInfo" class="trajectory-info" style="display: none;"></div>
@@ -338,8 +333,8 @@
         let currentStep = 0;
         let animationId = null;
         let isPlaying = false;
-        const cellSize = 10; // Canvas pixels per grid cell (0.1m)
-        const scale = 100; // Canvas pixels per meter
+        let scale = 100; // Canvas pixels per meter, will be set dynamically
+        const CANVAS_MAX_SIZE = 500; // px, max canvas width/height
 
         // UI Elements
         const statusEl = document.getElementById('status');
@@ -412,13 +407,11 @@
                 
                 const wallWidth = parseFloat(document.getElementById('wallWidth').value);
                 const wallHeight = parseFloat(document.getElementById('wallHeight').value);
-                const cellSize = parseFloat(document.getElementById('cellSize').value);
                 const obstacles = getObstacles();
 
                 const payload = {
                     wall_width: wallWidth,
                     wall_height: wallHeight,
-                    cell_size: cellSize,
                     obstacles: obstacles
                 };
 
@@ -538,15 +531,17 @@
         function drawScene() {
             if (!currentTrajectory) return;
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
             const { wall_width, wall_height, obstacles, path } = currentTrajectory;
-            
+            // Dynamically set scale and canvas size
+            // Always fit the wall inside CANVAS_MAX_SIZE
+            scale = Math.min(CANVAS_MAX_SIZE / wall_width, CANVAS_MAX_SIZE / wall_height);
+            canvas.width = Math.ceil(wall_width * scale);
+            canvas.height = Math.ceil(wall_height * scale);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             // Draw wall boundary
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 2;
             ctx.strokeRect(0, 0, wall_width * scale, wall_height * scale);
-            
             // Draw obstacles (red rectangles)
             ctx.fillStyle = '#f44336';
             obstacles.forEach(obs => {
@@ -557,32 +552,30 @@
                     obs.height * scale
                 );
             });
-            
             // Draw trajectory path (blue dots)
             ctx.fillStyle = '#2196F3';
             for (let i = 0; i < Math.min(currentStep, path.length); i++) {
                 const [row, col] = path[i];
                 ctx.beginPath();
                 ctx.arc(
-                    col * cellSize + cellSize / 2, 
-                    row * cellSize + cellSize / 2, 
-                    2, 
-                    0, 
+                    col * scale * 0.1 + scale * 0.1 / 2, // 0.1m per cell
+                    row * scale * 0.1 + scale * 0.1 / 2,
+                    2,
+                    0,
                     2 * Math.PI
                 );
                 ctx.fill();
             }
-            
             // Draw current position (larger red dot)
             if (currentStep > 0 && currentStep <= path.length) {
                 const [row, col] = path[currentStep - 1];
                 ctx.fillStyle = '#ff5722';
                 ctx.beginPath();
                 ctx.arc(
-                    col * cellSize + cellSize / 2, 
-                    row * cellSize + cellSize / 2, 
-                    4, 
-                    0, 
+                    col * scale * 0.1 + scale * 0.1 / 2,
+                    row * scale * 0.1 + scale * 0.1 / 2,
+                    4,
+                    0,
                     2 * Math.PI
                 );
                 ctx.fill();

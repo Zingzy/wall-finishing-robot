@@ -116,10 +116,14 @@ def generate_trajectory(
             or obs["x"] + obs["width"] > wall_width
             or obs["y"] + obs["height"] > wall_height
         ):
-            raise ValueError(f"Obstacle {i + 1} is outside wall boundaries")
+            raise ValueError(
+                f"Obstacle {i + 1} (x={obs['x']}, y={obs['y']}, w={obs['width']}, h={obs['height']}) is outside wall boundaries (wall_width={wall_width}, wall_height={wall_height})"
+            )
 
         if obs["width"] <= 0 or obs["height"] <= 0:
-            raise ValueError(f"Obstacle {i + 1} dimensions must be positive")
+            raise ValueError(
+                f"Obstacle {i + 1} (x={obs['x']}, y={obs['y']}, w={obs['width']}, h={obs['height']}) has non-positive dimensions"
+            )
 
     # Generate trajectory
     grid = create_grid(wall_width, wall_height, cell_size)

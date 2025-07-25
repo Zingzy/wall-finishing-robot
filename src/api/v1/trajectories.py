@@ -57,7 +57,7 @@ async def create_trajectory(
             wall_width=request.wall_width,
             wall_height=request.wall_height,
             obstacles=obstacles_dict,
-            cell_size=request.cell_size,
+            cell_size=0.1,  # Fixed value
         )
 
         # Store in database
@@ -93,7 +93,7 @@ async def create_trajectory(
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         logger.error(f"Error creating trajectory: {str(e)}")
-        raise HTTPException(status_code=500, detail="Failed to create trajectory")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get(
