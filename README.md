@@ -255,6 +255,29 @@ uv run mypy src --ignore-missing-imports
 uv run main.py
 ```
 
+## 🛠️ Technologies Used
+
+### Backend
+- **[Python 3.11+](https://python.org)** - Core programming language
+- **[FastAPI](https://fastapi.tiangolo.com/)** - For building the core API
+- **[SQLModel](https://sqlmodel.tiangolo.com/)** - ORM for SQL databases with Python, wrapper for SQLAlchemy
+- **[SQLite](https://sqlite.org/)** - For local data persistence
+- **[Pydantic](https://pydantic.dev/)** - For data validation and configuration
+- **[NumPy](https://numpy.org/)** - For efficient trajectory generation
+- **[Loguru](https://loguru.readthedocs.io/)** - For Logging
+
+### Development & Testing
+- **[pytest](https://pytest.org/)** - Testing framework
+- **[pytest-asyncio](https://pytest-asyncio.readthedocs.io/)** - Async testing support
+- **[mypy](https://mypy.readthedocs.io/)** - Static type checker
+- **[ruff](https://ruff.rs/)** - Fast Python linter and code formatter
+
+### Build & Package Management
+- **[uv](https://docs.astral.sh/uv/)** - Extremely fast Python package installer and resolver
+
+### CI/CD & Infrastructure
+- **[GitHub Actions](https://github.com/features/actions)** - Continuous integration and deployment
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
