@@ -25,12 +25,6 @@ class Trajectory(TrajectoryBase, table=True):
     __tablename__ = "trajectories"
 
     id: Optional[int] = Field(default=None, primary_key=True, index=True)
-    wall_width: float = Field(..., description="Width of the wall in meters")
-    wall_height: float = Field(..., description="Height of the wall in meters")
-    obstacles: str = Field(..., description="JSON string of obstacles list")
-    path: str = Field(..., description="JSON string of trajectory path")
-    obstacles_count: int = Field(..., description="Number of obstacles")
-    path_points: int = Field(..., description="Number of points in trajectory path")
 
     def __repr__(self) -> str:
         return f"<Trajectory(id={self.id}, wall={self.wall_width}x{self.wall_height})>"
@@ -136,7 +130,7 @@ class TrajectoryRepository:
     ) -> List[Dict[str, Any]]:
         """Get all trajectories with pagination."""
         statement = (
-            select(
+            select(     # type: ignore[call-overload]
                 Trajectory.id,
                 Trajectory.wall_width,
                 Trajectory.wall_height,
