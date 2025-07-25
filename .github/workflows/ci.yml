@@ -2,9 +2,18 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches:
+      - main
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.rst'
   pull_request:
-    branches: [ main, develop ]
+    branches:
+      - '**'
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.rst'
+  workflow_dispatch:
 
 jobs:
   test:
