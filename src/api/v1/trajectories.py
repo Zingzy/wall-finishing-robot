@@ -3,7 +3,6 @@
 import time
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlmodel import Session
-import time
 from loguru import logger
 
 from src.models.trajectory import (
@@ -176,7 +175,7 @@ async def list_trajectories(
         for traj in trajectories:
             # Ensure trajectory has an ID (should always be true from database)
             assert traj.id is not None, "Trajectory from database should have an ID"
-            
+
             obstacles = traj.get_obstacles()
             path = traj.get_path()
 
