@@ -1,0 +1,32 @@
+environment = "development"
+debug = false
+
+[database]
+url = "sqlite:///./trajectories.db"
+echo = false
+
+[logging]
+level = "INFO"
+file_path = "logs/app.log"
+rotation = "10 MB"
+retention = "1 week"
+format = "{time:YYYY-MM-DD HH:mm:ss} | {level} | {module}:{function}:{line} | {message}"
+
+[server]
+host = "0.0.0.0"
+port = 8000
+reload = true
+log_level = "info"
+
+[cors]
+allow_origins = ["*"]
+allow_credentials = true
+allow_methods = ["*"]
+allow_headers = ["*"]
+
+[api]
+title = "Wall Finishing Robot API"
+description = "API for autonomous wall-finishing robot trajectory generation and management"
+version = "1.0.0"
+docs_url = "/docs"
+redoc_url = "/redoc" 
